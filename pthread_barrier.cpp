@@ -36,8 +36,8 @@ pthread_barrier_t bLock;
 
 void *wakeUp(void *args){
 
-    cout << "I wait for 3 sec.." << endl;
-    sleep(3);
+    cout << "I wait for 2 sec.." << endl;
+    sleep(2);
     cout << "Wake up, helloCond!" << endl;
     pthread_cond_signal(&cond);
 //    sleep(1);
@@ -57,9 +57,9 @@ void *helloCond(void *args){
 
 void *helloBarrier(void *args){
     
-    cout << "helloBarrier is wait Barrier and sleeping 5 s.." << endl;
+    cout << "helloBarrier is wait Barrier and sleeping 3 s.." << endl;
     pthread_barrier_wait(&bLock);
-    sleep(5);
+    sleep(3);
     cout << "helloBarrier is over Barrier" << endl;
 
     pthread_exit(0);
