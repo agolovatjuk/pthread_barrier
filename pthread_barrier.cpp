@@ -32,6 +32,7 @@ using namespace std;
 
 pthread_mutex_t   mLock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t    cond = PTHREAD_COND_INITIALIZER;
+pthread_barrier_t bLock;
 
 void *wakeUp(void *args){
 
@@ -56,6 +57,11 @@ void *helloCond(void *args){
 
 void *helloBarrier(void *args){
     
+    cout << "helloBarrier is wait Barrier and sleeping 5 s.." << endl;
+    pthread_barrier_wait(&bLock);
+    sleep(5);
+    cout << "helloBarrier is over Barrier" << endl;
+
     pthread_exit(0);
 }
 
@@ -65,8 +71,8 @@ void *helloBarrier(void *args){
  */
 int main(int argc, char** argv) {
  
-    pthread_t tid1, tid2, tid3;
-    int t1, t2, t3;
+    pthread_t tid1, tid2, tid3, tid4;
+    int t1, t2, t3, t4;
     
     pid_t pid = getpid();
     FILE *f = fopen("main.pid", "w");
@@ -74,16 +80,21 @@ int main(int argc, char** argv) {
     cout << "PID:" << pid << endl;
     fclose(f);
 
+    pthread_barrier_init(&bLock, NULL, 2);
+    
     t1 = pthread_create(&tid1, NULL, helloCond, NULL);
     t2 = pthread_create(&tid2, NULL, helloBarrier, NULL);
     t3 = pthread_create(&tid3, NULL, wakeUp, NULL);
+    t4 = pthread_create(&tid4, NULL, helloBarrier, NULL);
     
     pthread_join(tid1, NULL);
     pthread_join(tid2, NULL);
     pthread_join(tid3, NULL);
+    pthread_join(tid4, NULL);
     
     pthread_cond_destroy(&cond);
     pthread_mutex_destroy(&mLock);
+    pthread_barrier_destroy(&bLock);
     
     return 0;
 }
